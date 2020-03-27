@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Audiocuentos Infantiles</string>
+    <string name="welcome_text">Hola, bienvenido</string>
+    <string name="welcome_subtitle_text">¿Qué cuento te gustaría escuchar hoy?</string>
 </resources>
