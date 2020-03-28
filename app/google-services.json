@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "788914187777",
+    "firebase_url": "https://audiocuentos-infantiles-alpha.firebaseio.com",
+    "project_id": "audiocuentos-infantiles-alpha",
+    "storage_bucket": "audiocuentos-infantiles-alpha.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:788914187777:android:01d031591ad0ff6e27da00",
+        "android_client_info": {
+          "package_name": "com.alpha.audiocuentosinfantiles"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "788914187777-drm99d57mm9cp7p8m30grui4gmp49kar.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATnRvK0XWWlc4uFlQhMHvfHt4zR6uvpEo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "788914187777-drm99d57mm9cp7p8m30grui4gmp49kar.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
