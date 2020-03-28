@@ -38,14 +38,17 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
+        android:background="@drawable/round"
+        android:searchIcon="@drawable/ic_search_black_24dp"
         android:iconifiedByDefault="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcomeSubtitleText" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <GridView
+        android:id="@+id/containerView"
+        android:numColumns="2"
         android:layout_width="match_parent"
         android:layout_height="410dp"
         android:layout_marginStart="16dp"
