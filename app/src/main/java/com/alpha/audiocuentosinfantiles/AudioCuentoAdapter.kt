@@ -10,9 +10,13 @@ import android.widget.TextView
 class AudioCuentoAdapter(var context:Context, items:ArrayList<AudioCuento>) : BaseAdapter() {
 
     var items:ArrayList<AudioCuento>? = null
+    var itemsCopy:ArrayList<AudioCuento>? = null
+
     init {
-        this.items = items
+        this.items = ArrayList(items)
+        this.itemsCopy = items
     }
+
     override fun getView(p0: Int, p1: View?, p2: ViewGroup?): View {
         var view = p1
         var holder: ViewHolder? = null
@@ -41,6 +45,25 @@ class AudioCuentoAdapter(var context:Context, items:ArrayList<AudioCuento>) : Ba
 
     override fun getCount(): Int {
         return items?.count()!!
+    }
+
+    fun filter(str:String){
+        items?.clear()
+
+        if(str.isEmpty()){
+            items = ArrayList(itemsCopy)
+            notifyDataSetChanged()
+            return
+        }
+
+        var busqueda = str
+        busqueda = busqueda.toLowerCase()
+        for(item in itemsCopy!!){
+            val nombre = item.title.toLowerCase()
+            if(nombre.contains(busqueda)){
+                items?.add(item)
+            }
+        }
     }
 
     private class ViewHolder(view:View){
