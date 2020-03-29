@@ -1,13 +1,11 @@
 package com.alpha.audiocuentosinfantiles
 
-class AudioCuento(title:String, description: String, url:String) {
-    var title:String = ""
-    var description:String = ""
-    var url:String = ""
+import com.google.firebase.database.IgnoreExtraProperties
 
-    init {
-        this.title = title
-        this.description = description
-        this.url = url
-    }
+@IgnoreExtraProperties
+data class AudioCuento(
+    var id:Int = 0,
+    var title:String = "",
+    var description:String = "",
+    var url:String = ""){
 }
