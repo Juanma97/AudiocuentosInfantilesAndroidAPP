@@ -10,14 +10,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val containerView: GridView = findViewById(R.id.containerView)
+        if(Network.networkWork(this)){
+            val containerView: GridView = findViewById(R.id.containerView)
+            val dataConnection:DataConnection = FirebaseHelper()
+            val adapter = AudioCuentoAdapter(this, dataConnection.retrieve())
 
-        val adapter = AudioCuentoAdapter(this, FirebaseHelper().retrieve())
-
-        containerView.adapter = adapter
-
-
+            containerView.adapter = adapter
+        }
     }
-
-
 }
