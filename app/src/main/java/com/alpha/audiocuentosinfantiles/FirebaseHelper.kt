@@ -1,5 +1,6 @@
 package com.alpha.audiocuentosinfantiles
 
+import android.util.Log
 import com.google.firebase.database.*
 
 class FirebaseHelper : DataConnection{
@@ -13,6 +14,7 @@ class FirebaseHelper : DataConnection{
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 fetchData(dataSnapshot)
+                Log.d("Firebase: ", "ITEMS")
             }
 
             override fun onCancelled(error: DatabaseError) {

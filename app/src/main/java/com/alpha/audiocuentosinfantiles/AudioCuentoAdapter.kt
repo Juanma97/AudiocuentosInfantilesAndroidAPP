@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
-class AudioCuentoAdapter(var context:Context, items:ArrayList<AudioCuento>) : BaseAdapter() {
+class AudioCuentoAdapter(var context:Context, items:ArrayList<AudioCuento>, var listener: ClickListener) : RecyclerView.Adapter<AudioCuentoAdapter.ViewHolder>() {
 
     var items:ArrayList<AudioCuento>? = null
     var itemsCopy:ArrayList<AudioCuento>? = null
@@ -17,34 +18,23 @@ class AudioCuentoAdapter(var context:Context, items:ArrayList<AudioCuento>) : Ba
         this.itemsCopy = items
     }
 
-    override fun getView(p0: Int, p1: View?, p2: ViewGroup?): View {
-        var view = p1
-        var holder: ViewHolder? = null
-
-        if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.audiocuento, null)
-            holder = ViewHolder(view)
-            view.tag = holder
-        }else{
-            holder = view.tag as? ViewHolder
-        }
-
-        val item = items?.get(p0) as? AudioCuento
-        holder?.title?.text = item?.title
-
-        return view!!
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(context).inflate(R.layout.audiocuento, parent, false)
+        val viewHolder = ViewHolder(view, listener)
+        return viewHolder
     }
 
-    override fun getItem(p0: Int): Any {
-        return items?.get(p0)!!
+    override fun getItemCount(): Int {
+        return items?.count()!!
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = items?.get(position)
+        holder.title?.text = item?.title
     }
 
     override fun getItemId(p0: Int): Long {
         return p0.toLong()
-    }
-
-    override fun getCount(): Int {
-        return items?.count()!!
     }
 
     fun filter(str:String){
@@ -66,13 +56,20 @@ class AudioCuentoAdapter(var context:Context, items:ArrayList<AudioCuento>) : Ba
         }
     }
 
-    private class ViewHolder(view:View){
+    class ViewHolder(view: View, listener: ClickListener) : RecyclerView.ViewHolder(view), View.OnClickListener{
+        var view = view
         var title:TextView? = null
-        var description:TextView? = null
+        var listener:ClickListener? = null
 
         init {
-            title = view.findViewById(R.id.title)
-            description = view.findViewById(R.id.description)
+            title = this.view.findViewById(R.id.title)
+            this.listener = listener
+            view.setOnClickListener(this)
         }
+
+        override fun onClick(v: View?) {
+            this.listener?.onItemClick(v!!, adapterPosition)
+        }
+
     }
 }
