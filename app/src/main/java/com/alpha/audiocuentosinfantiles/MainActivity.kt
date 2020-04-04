@@ -11,6 +11,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 
 class MainActivity : AppCompatActivity() {
@@ -23,28 +27,36 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var items: ArrayList<AudioCuento> = ArrayList()
-        items.add(AudioCuento(1, "Title1", "", ""))
-        items.add(AudioCuento(2, "Title2", "", ""))
-        items.add(AudioCuento(3, "Title3", "", ""))
-        items.add(AudioCuento(4, "Title4", "", ""))
-        items.add(AudioCuento(5, "Title5", "", ""))
-
         containerView = findViewById(R.id.containerView)
         containerView?.setHasFixedSize(true)
         layoutManager = GridLayoutManager(this, 2)
         containerView?.layoutManager = layoutManager
 
-        //val dataConnection:DataConnection = FirebaseHelper()
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.getReference("audiocuentos")
+        val items = ArrayList<AudioCuento>()
+        myRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (ds in dataSnapshot.getChildren()) {
+                    var acuento: AudioCuento = ds.getValue(AudioCuento::class.java)!!
+                    items.add(acuento)
+                }
+                adapter = AudioCuentoAdapter(items, object: ClickListener{
+                    override fun onItemClick(view: View, index: Int) {
+                        Toast.makeText(applicationContext, "Mensaje", Toast.LENGTH_LONG).show()
+                        startActivity(Intent(applicationContext, DetailsActivity::class.java))
+                    }
 
-        adapter = AudioCuentoAdapter(this, items, object: ClickListener{
-            override fun onItemClick(view: View, index: Int) {
-                Toast.makeText(applicationContext, "Mensaje", Toast.LENGTH_LONG).show()
-                startActivity(Intent(applicationContext, DetailsActivity::class.java))
+                })
+                containerView?.adapter = adapter
             }
 
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("FIREBASE", "Cancelled" + error.message)
+            }
         })
-        containerView?.adapter = adapter
+
+
 
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView:SearchView = findViewById(R.id.searchView)

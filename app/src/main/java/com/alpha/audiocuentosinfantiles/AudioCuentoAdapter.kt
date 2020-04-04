@@ -8,7 +8,7 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class AudioCuentoAdapter(var context:Context, items:ArrayList<AudioCuento>, var listener: ClickListener) : RecyclerView.Adapter<AudioCuentoAdapter.ViewHolder>() {
+class AudioCuentoAdapter(items:ArrayList<AudioCuento>, var listener: ClickListener) : RecyclerView.Adapter<AudioCuentoAdapter.ViewHolder>() {
 
     var items:ArrayList<AudioCuento>? = null
     var itemsCopy:ArrayList<AudioCuento>? = null
@@ -19,7 +19,7 @@ class AudioCuentoAdapter(var context:Context, items:ArrayList<AudioCuento>, var 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.audiocuento, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.audiocuento, parent, false)
         val viewHolder = ViewHolder(view, listener)
         return viewHolder
     }
