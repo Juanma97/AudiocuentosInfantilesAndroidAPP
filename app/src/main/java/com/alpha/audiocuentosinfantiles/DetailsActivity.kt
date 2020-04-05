@@ -22,8 +22,9 @@ class DetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
+        val audioCuento = intent.getSerializableExtra("AUDIOCUENTO") as? AudioCuento
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.getReferenceFromUrl("gs://audiocuentos-infantiles-alpha.appspot.com/audiocuentos/DosCabrasTestarudas.mp3")
+        val storageRef = storage.getReferenceFromUrl(audioCuento?.url!!)
         // Start the media player
         playBtn.setOnClickListener{
             if(pause){

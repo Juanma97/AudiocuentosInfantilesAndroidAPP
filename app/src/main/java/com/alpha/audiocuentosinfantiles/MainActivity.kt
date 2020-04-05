@@ -44,8 +44,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 adapter = AudioCuentoAdapter(items, object: ClickListener{
                     override fun onItemClick(view: View, index: Int) {
-                        Toast.makeText(applicationContext, "Mensaje", Toast.LENGTH_LONG).show()
-                        startActivity(Intent(applicationContext, DetailsActivity::class.java))
+                        val intent = Intent(applicationContext, DetailsActivity::class.java)
+                        intent.putExtra("AUDIOCUENTO", items.get(index))
+                        startActivity(intent)
                     }
 
                 })
