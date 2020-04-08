@@ -2,20 +2,20 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".DetailsActivity">
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="413dp"
+        android:id="@+id/audiocuento_image"
+        android:layout_width="match_parent"
         android:layout_height="282dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_gallery" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView"
@@ -31,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/audiocuento_image" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -80,22 +80,22 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:lines="12"
+        android:maxLines="12"
+        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum facilisis felis non luctus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Integer nec erat sit amet ex elementum dignissim. Integer mattis interdum mattis. Donec facilisis neque vel felis facilisis eleifend. Fusce ut sem enim. Maecenas consectetur nulla scelerisque nunc vulputate dignissim. Curabitur ultricies erat felis, vel viverra dui vulputate id. Nam enim est, pretium ut porttitor nec, hendrerit eu arcu. In hac habitasse platea dictumst. Nulla pellentesque sapien ac ipsum maximus iaculis quis ut orci. Quisque finibus nisi ac consectetur hendrerit. Mauris sem diam, mattis ac varius luctus, dictum et lectus. Cras lectus ante, condimentum a aliquet quis, aliquet ut sem. Cras faucibus a lorem quis bibendum. Nunc laoreet neque mi, non euismod massa egestas imperdiet."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        android:maxLines="12"
-        android:lines="12"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum facilisis felis non luctus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Integer nec erat sit amet ex elementum dignissim. Integer mattis interdum mattis. Donec facilisis neque vel felis facilisis eleifend. Fusce ut sem enim. Maecenas consectetur nulla scelerisque nunc vulputate dignissim. Curabitur ultricies erat felis, vel viverra dui vulputate id. Nam enim est, pretium ut porttitor nec, hendrerit eu arcu. In hac habitasse platea dictumst. Nulla pellentesque sapien ac ipsum maximus iaculis quis ut orci. Quisque finibus nisi ac consectetur hendrerit. Mauris sem diam, mattis ac varius luctus, dictum et lectus. Cras lectus ante, condimentum a aliquet quis, aliquet ut sem. Cras faucibus a lorem quis bibendum. Nunc laoreet neque mi, non euismod massa egestas imperdiet." />
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -105,19 +105,19 @@
 
         <LinearLayout
             android:id="@+id/mediaplayer"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:text="@string/common_google_play_services_enable_button">
 
             <Button
                 android:id="@+id/pauseBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:enabled="false"
                 android:text="Pause" />
 
@@ -125,10 +125,10 @@
                 android:id="@+id/playBtn"
                 android:layout_width="88dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="Play"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/stopBtn"
@@ -139,10 +139,10 @@
                 android:id="@+id/stopBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
                 android:layout_marginRight="24dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:enabled="false"
                 android:text="Stop"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -163,6 +163,7 @@
                 android:id="@+id/tv_due"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
             <SeekBar
                 android:id="@+id/seek_bar"
                 android:layout_width="match_parent"
@@ -172,8 +173,6 @@
         </RelativeLayout>
 
     </LinearLayout>
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

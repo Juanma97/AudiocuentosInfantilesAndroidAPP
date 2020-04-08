@@ -29,20 +29,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         containerView = findViewById(R.id.containerView)
-        containerView?.setHasFixedSize(true)
+        containerView?.setHasFixedSize(false)
         layoutManager = GridLayoutManager(this, 2)
         containerView?.layoutManager = layoutManager
 
         val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference("audiocuentos")
         val items = ArrayList<AudioCuento>()
-        myRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        val context = this
+        myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (ds in dataSnapshot.getChildren()) {
                     var acuento: AudioCuento = ds.getValue(AudioCuento::class.java)!!
                     items.add(acuento)
                 }
-                adapter = AudioCuentoAdapter(items, object: ClickListener{
+                adapter = AudioCuentoAdapter(context, items, object: ClickListener{
                     override fun onItemClick(view: View, index: Int) {
                         val intent = Intent(applicationContext, DetailsActivity::class.java)
                         intent.putExtra("AUDIOCUENTO", items.get(index))
@@ -50,6 +51,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 })
+                Log.d("ITEMS", "" + items.size)
                 containerView?.adapter = adapter
             }
 

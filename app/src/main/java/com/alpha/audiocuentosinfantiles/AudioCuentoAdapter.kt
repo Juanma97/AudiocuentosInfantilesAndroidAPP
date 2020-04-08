@@ -1,14 +1,17 @@
 package com.alpha.audiocuentosinfantiles
 
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 
-class AudioCuentoAdapter(items:ArrayList<AudioCuento>, var listener: ClickListener) : RecyclerView.Adapter<AudioCuentoAdapter.ViewHolder>() {
+class AudioCuentoAdapter(var context:Context, items:ArrayList<AudioCuento>, var listener: ClickListener) : RecyclerView.Adapter<AudioCuentoAdapter.ViewHolder>() {
 
     var items:ArrayList<AudioCuento>? = null
     var itemsCopy:ArrayList<AudioCuento>? = null
@@ -31,6 +34,7 @@ class AudioCuentoAdapter(items:ArrayList<AudioCuento>, var listener: ClickListen
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items?.get(position)
         holder.title?.text = item?.title
+        Glide.with(context).load(item?.url_image).into(holder.image!!)
     }
 
     override fun getItemId(p0: Int): Long {
@@ -59,10 +63,12 @@ class AudioCuentoAdapter(items:ArrayList<AudioCuento>, var listener: ClickListen
     class ViewHolder(view: View, listener: ClickListener) : RecyclerView.ViewHolder(view), View.OnClickListener{
         var view = view
         var title:TextView? = null
+        var image:ImageView? = null
         var listener:ClickListener? = null
 
         init {
             title = this.view.findViewById(R.id.title)
+            image = this.view.findViewById(R.id.audiocuento_item_image)
             this.listener = listener
             view.setOnClickListener(this)
         }

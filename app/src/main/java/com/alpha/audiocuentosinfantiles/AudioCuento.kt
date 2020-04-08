@@ -9,4 +9,4 @@ data class AudioCuento(
     val title:String = "",
     val description:String = "",
     val url:String = "",
-    val urlImage:String = ""):Serializable
+    val url_image:String = "") : Serializable

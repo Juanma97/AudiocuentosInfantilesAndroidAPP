@@ -1,15 +1,15 @@
 package com.alpha.audiocuentosinfantiles
 
 import android.media.MediaPlayer
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.Toast
-import com.google.android.gms.tasks.OnSuccessListener
-import kotlinx.android.synthetic.main.activity_details.*
+import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.android.synthetic.main.activity_details.*
 
 class DetailsActivity : AppCompatActivity() {
 
@@ -22,9 +22,15 @@ class DetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
+        var image:ImageView = findViewById(R.id.audiocuento_image)
+
+        ;
         val audioCuento = intent.getSerializableExtra("AUDIOCUENTO") as? AudioCuento
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.getReferenceFromUrl(audioCuento?.url!!)
+
+        Glide.with(this).load(audioCuento.url_image).into(image)
+
         // Start the media player
         playBtn.setOnClickListener{
             if(pause){
