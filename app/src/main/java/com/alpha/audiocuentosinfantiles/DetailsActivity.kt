@@ -5,43 +5,51 @@ import android.os.Bundle
 import android.os.Handler
 import android.widget.ImageView
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_details.*
 
+
 class DetailsActivity : AppCompatActivity() {
 
     var mediaPlayer: MediaPlayer = MediaPlayer()
-    private lateinit var runnable:Runnable
+    private lateinit var runnable: Runnable
     private var handler: Handler = Handler()
-    private var pause:Boolean = false
+    private var pause: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
-        var image:ImageView = findViewById(R.id.audiocuento_image)
+        val image: ImageView = findViewById(R.id.audiocuento_image)
+        val title: TextView = findViewById(R.id.titleDetails)
+        val description: TextView = findViewById(R.id.descriptionDetails)
+        val duration: TextView = findViewById(R.id.durationDetails)
 
-        ;
         val audioCuento = intent.getSerializableExtra("AUDIOCUENTO") as? AudioCuento
+        title.text = audioCuento?.title
+        description.text = audioCuento?.description
+        duration.text = audioCuento?.duration
+
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.getReferenceFromUrl(audioCuento?.url!!)
 
         Glide.with(this).load(audioCuento.url_image).into(image)
 
         // Start the media player
-        playBtn.setOnClickListener{
-            if(pause){
+        playBtn.setOnClickListener {
+            if (pause) {
                 mediaPlayer.seekTo(mediaPlayer.currentPosition)
                 mediaPlayer.start()
                 pause = false
                 playBtn.isEnabled = false
                 pauseBtn.isEnabled = true
                 stopBtn.isEnabled = true
-                Toast.makeText(applicationContext,"media playing",Toast.LENGTH_SHORT).show()
-            }else{
+                Toast.makeText(applicationContext, "media playing", Toast.LENGTH_SHORT).show()
+            } else {
                 storageRef.downloadUrl.addOnSuccessListener {
                     val url = it.toString()
                     mediaPlayer.setDataSource(url)
@@ -54,7 +62,7 @@ class DetailsActivity : AppCompatActivity() {
                             playBtn.isEnabled = true
                             pauseBtn.isEnabled = false
                             stopBtn.isEnabled = false
-                            Toast.makeText(this,"end",Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "end", Toast.LENGTH_SHORT).show()
                         }
                         it.start()
                     })
@@ -66,18 +74,18 @@ class DetailsActivity : AppCompatActivity() {
 
         // Pause the media player
         pauseBtn.setOnClickListener {
-            if(mediaPlayer.isPlaying){
+            if (mediaPlayer.isPlaying) {
                 mediaPlayer.pause()
                 pause = true
                 playBtn.isEnabled = true
                 pauseBtn.isEnabled = false
                 stopBtn.isEnabled = true
-                Toast.makeText(this,"media pause",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "media pause", Toast.LENGTH_SHORT).show()
             }
         }
         // Stop the media player
-        stopBtn.setOnClickListener{
-            if(mediaPlayer.isPlaying || pause.equals(true)){
+        stopBtn.setOnClickListener {
+            if (mediaPlayer.isPlaying || pause.equals(true)) {
                 pause = false
                 seek_bar.setProgress(0)
                 mediaPlayer.stop()
@@ -89,7 +97,7 @@ class DetailsActivity : AppCompatActivity() {
                 stopBtn.isEnabled = false
                 tv_pass.text = ""
                 tv_due.text = ""
-                Toast.makeText(this,"media stop", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "media stop", Toast.LENGTH_SHORT).show()
             }
         }
         // Seek bar change listener
@@ -107,6 +115,7 @@ class DetailsActivity : AppCompatActivity() {
             }
         })
     }
+
     // Method to initialize seek bar and audio stats
     private fun initializeSeekBar() {
         seek_bar.max = mediaPlayer.seconds
@@ -124,14 +133,14 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     // Creating an extension property to get the media player time duration in seconds
-    val MediaPlayer.seconds:Int
+    val MediaPlayer.seconds: Int
         get() {
             return this.duration / 1000
         }
     // Creating an extension property to get media player current position in seconds
-    val MediaPlayer.currentSeconds:Int
+    val MediaPlayer.currentSeconds: Int
         get() {
-            return this.currentPosition/1000
+            return this.currentPosition / 1000
         }
 }
 

@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import android.media.MediaPlayer
+import kotlinx.android.synthetic.main.activity_details.view.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -40,13 +41,13 @@ class MainActivity : AppCompatActivity() {
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (ds in dataSnapshot.getChildren()) {
-                    var acuento: AudioCuento = ds.getValue(AudioCuento::class.java)!!
+                    val acuento: AudioCuento = ds.getValue(AudioCuento::class.java)!!
                     items.add(acuento)
                 }
                 adapter = AudioCuentoAdapter(context, items, object: ClickListener{
                     override fun onItemClick(view: View, index: Int) {
                         val intent = Intent(applicationContext, DetailsActivity::class.java)
-                        intent.putExtra("AUDIOCUENTO", items.get(index))
+                        intent.putExtra("AUDIOCUENTO", adapter?.items?.get(index))
                         startActivity(intent)
                     }
 
