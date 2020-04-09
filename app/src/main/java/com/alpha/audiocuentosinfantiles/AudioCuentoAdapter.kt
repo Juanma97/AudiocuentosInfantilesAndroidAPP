@@ -11,10 +11,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class AudioCuentoAdapter(var context:Context, items:ArrayList<AudioCuento>, var listener: ClickListener) : RecyclerView.Adapter<AudioCuentoAdapter.ViewHolder>() {
+class AudioCuentoAdapter(
+    var context: Context,
+    items: ArrayList<AudioCuento>,
+    var listener: ClickListener
+) : RecyclerView.Adapter<AudioCuentoAdapter.ViewHolder>() {
 
-    var items:ArrayList<AudioCuento>? = null
-    var itemsCopy:ArrayList<AudioCuento>? = null
+    var items: ArrayList<AudioCuento>? = null
+    var itemsCopy: ArrayList<AudioCuento>? = null
 
     init {
         this.items = ArrayList(items)
@@ -41,10 +45,10 @@ class AudioCuentoAdapter(var context:Context, items:ArrayList<AudioCuento>, var 
         return p0.toLong()
     }
 
-    fun filter(str:String){
+    fun filter(str: String) {
         items?.clear()
 
-        if(str.isEmpty()){
+        if (str.isEmpty()) {
             items = ArrayList(itemsCopy)
             notifyDataSetChanged()
             return
@@ -52,19 +56,20 @@ class AudioCuentoAdapter(var context:Context, items:ArrayList<AudioCuento>, var 
 
         var busqueda = str
         busqueda = busqueda.toLowerCase()
-        for(item in itemsCopy!!){
+        for (item in itemsCopy!!) {
             val nombre = item.title.toLowerCase()
-            if(nombre.contains(busqueda)){
+            if (nombre.contains(busqueda)) {
                 items?.add(item)
             }
         }
     }
 
-    class ViewHolder(view: View, listener: ClickListener) : RecyclerView.ViewHolder(view), View.OnClickListener{
+    class ViewHolder(view: View, listener: ClickListener) : RecyclerView.ViewHolder(view),
+        View.OnClickListener {
         var view = view
-        var title:TextView? = null
-        var image:ImageView? = null
-        var listener:ClickListener? = null
+        var title: TextView? = null
+        var image: ImageView? = null
+        var listener: ClickListener? = null
 
         init {
             title = this.view.findViewById(R.id.title)

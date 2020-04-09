@@ -3,14 +3,13 @@ package com.alpha.audiocuentosinfantiles
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
-import android.widget.ImageView
-import android.widget.SeekBar
-import android.widget.TextView
-import android.widget.Toast
+import android.util.Log
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_details.*
+import java.io.File
 
 
 class DetailsActivity : AppCompatActivity() {
@@ -28,14 +27,20 @@ class DetailsActivity : AppCompatActivity() {
         val title: TextView = findViewById(R.id.titleDetails)
         val description: TextView = findViewById(R.id.descriptionDetails)
         val duration: TextView = findViewById(R.id.durationDetails)
+        val downloadFile: Button = findViewById(R.id.downloadFile)
+        val storage = FirebaseStorage.getInstance()
+
 
         val audioCuento = intent.getSerializableExtra("AUDIOCUENTO") as? AudioCuento
         title.text = audioCuento?.title
         description.text = audioCuento?.description
         duration.text = audioCuento?.duration
 
-        val storage = FirebaseStorage.getInstance()
         val storageRef = storage.getReferenceFromUrl(audioCuento?.url!!)
+
+        downloadFile.setOnClickListener{
+            downloadFile(storage, audioCuento.url)
+        }
 
         Glide.with(this).load(audioCuento.url_image).into(image)
 
@@ -114,6 +119,21 @@ class DetailsActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {
             }
         })
+    }
+
+    private fun downloadFile(storage: FirebaseStorage, url: String) {
+        val httpsReference = storage.getReferenceFromUrl(url)
+
+        val localFile = File.createTempFile("music", "mp3")
+
+
+        httpsReference.getFile(localFile).addOnSuccessListener {
+            Log.d("STORAGE", "File created")
+            Log.d("STORAGE", "Bytes : " + it.bytesTransferred)
+        }.addOnFailureListener {
+            // Handle any errors
+            Log.d("STORAGE", "File NOT created")
+        }
     }
 
     // Method to initialize seek bar and audio stats

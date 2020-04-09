@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
                     val acuento: AudioCuento = ds.getValue(AudioCuento::class.java)!!
                     items.add(acuento)
                 }
-                adapter = AudioCuentoAdapter(context, items, object: ClickListener{
+                adapter = AudioCuentoAdapter(context, items, object : ClickListener {
                     override fun onItemClick(view: View, index: Int) {
                         val intent = Intent(applicationContext, DetailsActivity::class.java)
                         intent.putExtra("AUDIOCUENTO", adapter?.items?.get(index))
@@ -62,18 +62,17 @@ class MainActivity : AppCompatActivity() {
         })
 
 
-
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchView:SearchView = findViewById(R.id.searchView)
+        val searchView: SearchView = findViewById(R.id.searchView)
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         searchView.queryHint = "Buscar audiocuento..."
 
-        searchView.setOnQueryTextFocusChangeListener{ v, hasFocus ->
+        searchView.setOnQueryTextFocusChangeListener { v, hasFocus ->
 
         }
 
-        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(p0: String?): Boolean {
                 adapter?.filter(p0!!)
                 adapter?.notifyDataSetChanged()

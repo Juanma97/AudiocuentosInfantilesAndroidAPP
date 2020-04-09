@@ -111,6 +111,13 @@
             android:text="@string/common_google_play_services_enable_button">
 
             <Button
+                android:id="@+id/downloadFile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Download" />
+
+            <Button
                 android:id="@+id/pauseBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -1,5 +1,5 @@
 package com.alpha.audiocuentosinfantiles
 
 interface DataConnection {
-    fun retrieve():ArrayList<AudioCuento>
+    fun retrieve(): ArrayList<AudioCuento>
 }
