@@ -38,7 +38,7 @@ class AudioCuentoAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items?.get(position)
         holder.title?.text = item?.title
-        Glide.with(context).load(item?.url_image).into(holder.image!!)
+        Glide.with(context).load(item?.url_image).into(holder.image as ImageView)
     }
 
     override fun getItemId(p0: Int): Long {

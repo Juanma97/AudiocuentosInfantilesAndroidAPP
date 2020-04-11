@@ -137,8 +137,6 @@ class DetailsActivity : AppCompatActivity() {
 
     private fun updateTimerAndSeekbar() {
         val currentDuration: Long = mediaPlayer.currentPosition.toLong()
-        Log.d("MUSIC", totalDuration.toString())
-        Log.d("MUSIC", currentDuration.toString())
         tv_song_total_duration!!.text = utils!!.milliSecondsToTimer(totalDuration!!)
         tv_song_current_duration!!.text = utils!!.milliSecondsToTimer(currentDuration)
         seek_song_progressbar!!.progress = utils!!.getProgressSeekBar(currentDuration, totalDuration!!)
@@ -152,9 +150,7 @@ class DetailsActivity : AppCompatActivity() {
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.getItemId() == android.R.id.home) {
-            finish()
-        }
+        if (item.getItemId() == android.R.id.home) finish()
         return super.onOptionsItemSelected(item)
     }
 }

@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 })
-                Log.d("ITEMS", "" + items.size)
                 containerView?.adapter = adapter
             }
 
