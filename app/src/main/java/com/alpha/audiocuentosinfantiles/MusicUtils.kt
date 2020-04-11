@@ -1,5 +1,7 @@
 package com.alpha.audiocuentosinfantiles
 
+import android.util.Log
+
 class MusicUtils {
     /**
      * Function to convert milliseconds time to
@@ -28,27 +30,14 @@ class MusicUtils {
         return finalTimerString
     }
 
-    /**
-     * Function to get Progress percentage
-     *
-     * @param currentDuration
-     * @param totalDuration
-     */
     fun getProgressSeekBar(currentDuration: Long, totalDuration: Long): Int {
-        var progress = 0.toDouble()
-        // calculating percentage
-        progress =
-            currentDuration.toDouble() / totalDuration * MAX_PROGRESS
+        val progress:Double =
+            ((currentDuration.toDouble() / totalDuration) * MAX_PROGRESS) / 100
         // return percentage
+        Log.d("MUSIC PROGRESS: ", progress.toString())
         return progress.toInt()
     }
 
-    /**
-     * Function to change progress to timer
-     *
-     * @param progress - totalDuration
-     * returns current duration in milliseconds
-     */
     fun progressToTimer(progress: Int, totalDuration: Int): Int {
         var totalDuration = totalDuration
         var currentDuration = 0

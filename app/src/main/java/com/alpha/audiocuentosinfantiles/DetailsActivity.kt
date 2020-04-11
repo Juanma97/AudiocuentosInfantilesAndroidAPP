@@ -36,15 +36,16 @@ class DetailsActivity : AppCompatActivity() {
     var image: CircularImageView? = null
 
     var mediaPlayer: MediaPlayer = MediaPlayer()
-    //private lateinit var runnable: Runnable
-    private var handler: Handler = Handler()
-    private var pause: Boolean = false
 
+    var handler: Handler = Handler()
+
+    var totalDuration: Long? = null
     var utils: MusicUtils? = null
     val storage = FirebaseStorage.getInstance()
     var storageRef:StorageReference? = null
 
     fun setMusicPlayerComponents() {
+        utils = MusicUtils()
         btn_play = findViewById(R.id.btn_play)
         parent_view = findViewById(R.id.parent_view)
         seek_song_progressbar = findViewById(R.id.seek_song_progressbar)
@@ -57,13 +58,16 @@ class DetailsActivity : AppCompatActivity() {
             btn_play?.setImageResource(R.drawable.ic_play_arrow)
         }
 
+        mediaPlayer.setOnPreparedListener {
+            totalDuration = mediaPlayer.duration.toLong()
+            updateTimerAndSeekbar()
+        }
+
         storageRef?.downloadUrl?.addOnSuccessListener {
             val url = it.toString()
             mediaPlayer.setDataSource(url)
             mediaPlayer.prepareAsync()
         }
-
-        utils = MusicUtils()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +80,7 @@ class DetailsActivity : AppCompatActivity() {
         title_details?.text = audioCuento.title
 
         Glide.with(this).load(audioCuento.url_image).into(image as ImageView)
-        // Seek bar change listener
+
         seek_song_progressbar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, b: Boolean) {
 
@@ -88,14 +92,13 @@ class DetailsActivity : AppCompatActivity() {
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 handler.removeCallbacks(mUpdateTimeTask)
-                var totalDuration:Int = mediaPlayer.duration
-                var currentPosition:Int = utils?.progressToTimer(seekBar.progress, totalDuration)!!
+                val totalDuration:Int = mediaPlayer.duration
+                val currentPosition:Int = utils?.progressToTimer(seekBar.progress, totalDuration)!!
                 mediaPlayer.seekTo(currentPosition)
                 handler.post(mUpdateTimeTask)
             }
         })
         buttonPlayerAction()
-        updateTimerAndSeekbar()
     }
 
     private fun buttonPlayerAction() {
@@ -132,48 +135,13 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
-
-    private fun toggleButtonColor(bt: ImageButton): Boolean {
-        val selected = bt.getTag(bt.id) as String
-        return if (selected != null) { // selected
-            bt.setColorFilter(
-                resources.getColor(R.color.colorPrimary),
-                PorterDuff.Mode.SRC_ATOP
-            )
-            bt.setTag(bt.id, null)
-            false
-        } else {
-            bt.setTag(bt.id, "selected")
-            bt.setColorFilter(
-                resources.getColor(R.color.colorPrimaryDark),
-                PorterDuff.Mode.SRC_ATOP
-            )
-            true
-        }
-    }
-
     private fun updateTimerAndSeekbar() {
-        val totalDuration: Long = mediaPlayer.getDuration().toLong()
-        val currentDuration: Long = mediaPlayer.getCurrentPosition().toLong()
-        tv_song_total_duration!!.text = utils!!.milliSecondsToTimer(totalDuration)
+        val currentDuration: Long = mediaPlayer.currentPosition.toLong()
+        Log.d("MUSIC", totalDuration.toString())
+        Log.d("MUSIC", currentDuration.toString())
+        tv_song_total_duration!!.text = utils!!.milliSecondsToTimer(totalDuration!!)
         tv_song_current_duration!!.text = utils!!.milliSecondsToTimer(currentDuration)
-        seek_song_progressbar!!.progress =
-            utils!!.getProgressSeekBar(currentDuration, totalDuration)
-    }
-
-    private fun downloadFile(storage: FirebaseStorage, url: String) {
-        val httpsReference = storage.getReferenceFromUrl(url)
-
-        val localFile = File.createTempFile("music", "mp3")
-
-
-        httpsReference.getFile(localFile).addOnSuccessListener {
-            Log.d("STORAGE", "File created")
-            Log.d("STORAGE", "Bytes : " + it.bytesTransferred)
-        }.addOnFailureListener {
-            // Handle any errors
-            Log.d("STORAGE", "File NOT created")
-        }
+        seek_song_progressbar!!.progress = utils!!.getProgressSeekBar(currentDuration, totalDuration!!)
     }
 
     override fun onDestroy() {
