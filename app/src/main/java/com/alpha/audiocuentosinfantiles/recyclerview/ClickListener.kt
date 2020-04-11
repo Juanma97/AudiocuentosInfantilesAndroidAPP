@@ -1,4 +1,4 @@
-package com.alpha.audiocuentosinfantiles
+package com.alpha.audiocuentosinfantiles.recyclerview
 
 import android.view.View
 

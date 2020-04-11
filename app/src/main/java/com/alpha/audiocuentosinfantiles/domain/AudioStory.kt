@@ -1,4 +1,4 @@
-package com.alpha.audiocuentosinfantiles
+package com.alpha.audiocuentosinfantiles.domain
 
 import com.google.firebase.database.IgnoreExtraProperties
 import java.io.Serializable

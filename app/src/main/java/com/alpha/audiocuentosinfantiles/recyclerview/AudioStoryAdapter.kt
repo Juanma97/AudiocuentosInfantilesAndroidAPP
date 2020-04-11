@@ -1,4 +1,4 @@
-package com.alpha.audiocuentosinfantiles
+package com.alpha.audiocuentosinfantiles.recyclerview
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.alpha.audiocuentosinfantiles.domain.AudioStory
+import com.alpha.audiocuentosinfantiles.R
 import com.bumptech.glide.Glide
 
 class AudioStoryAdapter(
@@ -25,7 +27,11 @@ class AudioStoryAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.audiocuento, parent, false)
-        val viewHolder = ViewHolder(view, listener)
+        val viewHolder =
+            ViewHolder(
+                view,
+                listener
+            )
         return viewHolder
     }
 

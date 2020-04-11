@@ -1,4 +1,4 @@
-package com.alpha.audiocuentosinfantiles
+package com.alpha.audiocuentosinfantiles.utils
 
 import android.content.Context
 import android.net.ConnectivityManager

@@ -1,4 +1,4 @@
-package com.alpha.audiocuentosinfantiles
+package com.alpha.audiocuentosinfantiles.activity
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -13,6 +13,9 @@ import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSeekBar
+import com.alpha.audiocuentosinfantiles.utils.MediaPlayerUtils
+import com.alpha.audiocuentosinfantiles.R
+import com.alpha.audiocuentosinfantiles.domain.AudioStory
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -36,12 +39,13 @@ class DetailsActivity : AppCompatActivity() {
     var handler: Handler = Handler()
 
     var totalDuration: Long? = null
-    var musicUtils: MusicUtils? = null
+    var mediaPlayerUtils: MediaPlayerUtils? = null
     val storage = FirebaseStorage.getInstance()
     var storageRef:StorageReference? = null
 
     fun setMusicPlayerComponents() {
-        musicUtils = MusicUtils()
+        mediaPlayerUtils =
+            MediaPlayerUtils()
         buttonPlay = findViewById(R.id.btn_play)
         parentView = findViewById(R.id.parent_view)
         progressBar = findViewById(R.id.seek_song_progressbar)
@@ -89,7 +93,7 @@ class DetailsActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 handler.removeCallbacks(mUpdateTimeTask)
                 val totalDuration:Int = mediaPlayer.duration
-                val currentPosition:Int = musicUtils?.progressToTimer(seekBar.progress, totalDuration)!!
+                val currentPosition:Int = mediaPlayerUtils?.progressToTimer(seekBar.progress, totalDuration)!!
                 mediaPlayer.seekTo(currentPosition)
                 handler.post(mUpdateTimeTask)
             }
@@ -133,9 +137,9 @@ class DetailsActivity : AppCompatActivity() {
 
     private fun updateTimerAndSeekbar() {
         val currentDuration: Long = mediaPlayer.currentPosition.toLong()
-        totalDurationText!!.text = musicUtils!!.milliSecondsToTimer(totalDuration!!)
-        currentDurationText!!.text = musicUtils!!.milliSecondsToTimer(currentDuration)
-        progressBar!!.progress = musicUtils!!.getProgressSeekBar(currentDuration, totalDuration!!)
+        totalDurationText!!.text = mediaPlayerUtils!!.milliSecondsToTimer(totalDuration!!)
+        currentDurationText!!.text = mediaPlayerUtils!!.milliSecondsToTimer(currentDuration)
+        progressBar!!.progress = mediaPlayerUtils!!.getProgressSeekBar(currentDuration, totalDuration!!)
     }
 
     override fun onDestroy() {

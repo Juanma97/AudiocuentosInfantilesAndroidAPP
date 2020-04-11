@@ -1,6 +1,6 @@
-package com.alpha.audiocuentosinfantiles
+package com.alpha.audiocuentosinfantiles.utils
 
-class MusicUtils {
+class MediaPlayerUtils {
 
     fun milliSecondsToTimer(milliseconds: Long): String {
         var finalTimerString = ""

@@ -1,6 +1,7 @@
 package com.alpha.audiocuentosinfantiles
 
 import android.util.Log
+import com.alpha.audiocuentosinfantiles.domain.AudioStory
 import com.google.firebase.database.*
 
 class FirebaseHelper {
@@ -14,7 +15,8 @@ class FirebaseHelper {
         myRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (ds in dataSnapshot.getChildren()) {
-                    var acuento: AudioStory = ds.getValue(AudioStory::class.java)!!
+                    var acuento: AudioStory = ds.getValue(
+                        AudioStory::class.java)!!
                     items.add(acuento)
                 }
             }
