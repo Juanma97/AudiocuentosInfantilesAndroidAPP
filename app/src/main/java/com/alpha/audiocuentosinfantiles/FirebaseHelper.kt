@@ -7,14 +7,14 @@ class FirebaseHelper {
 
     val database = FirebaseDatabase.getInstance()
     val myRef = database.getReference("audiocuentos")
-    val items = ArrayList<AudioCuento>()
+    val items = ArrayList<AudioStory>()
 
 
-    fun retrieve(): ArrayList<AudioCuento> {
+    fun retrieve(): ArrayList<AudioStory> {
         myRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (ds in dataSnapshot.getChildren()) {
-                    var acuento: AudioCuento = ds.getValue(AudioCuento::class.java)!!
+                    var acuento: AudioStory = ds.getValue(AudioStory::class.java)!!
                     items.add(acuento)
                 }
             }

@@ -4,7 +4,7 @@ import com.google.firebase.database.IgnoreExtraProperties
 import java.io.Serializable
 
 @IgnoreExtraProperties
-data class AudioCuento(
+data class AudioStory(
     val id: Int = 0,
     val duration: String = "",
     val title: String = "",

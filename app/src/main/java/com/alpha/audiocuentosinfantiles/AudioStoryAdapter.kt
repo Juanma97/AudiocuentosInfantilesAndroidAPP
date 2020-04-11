@@ -1,24 +1,22 @@
 package com.alpha.audiocuentosinfantiles
 
 import android.content.Context
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class AudioCuentoAdapter(
+class AudioStoryAdapter(
     var context: Context,
-    items: ArrayList<AudioCuento>,
+    items: ArrayList<AudioStory>,
     var listener: ClickListener
-) : RecyclerView.Adapter<AudioCuentoAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<AudioStoryAdapter.ViewHolder>() {
 
-    var items: ArrayList<AudioCuento>? = null
-    var itemsCopy: ArrayList<AudioCuento>? = null
+    var items: ArrayList<AudioStory>? = null
+    var itemsCopy: ArrayList<AudioStory>? = null
 
     init {
         this.items = ArrayList(items)

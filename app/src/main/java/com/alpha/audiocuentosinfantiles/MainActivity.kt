@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,13 +14,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import android.media.MediaPlayer
-import kotlinx.android.synthetic.main.activity_details.view.*
 
 
 class MainActivity : AppCompatActivity() {
 
-    var adapter: AudioCuentoAdapter? = null
+    var adapter: AudioStoryAdapter? = null
     var containerView: RecyclerView? = null
     var layoutManager: RecyclerView.LayoutManager? = null
 
@@ -36,18 +33,18 @@ class MainActivity : AppCompatActivity() {
 
         val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference("audiocuentos")
-        val items = ArrayList<AudioCuento>()
+        val items = ArrayList<AudioStory>()
         val context = this
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (ds in dataSnapshot.getChildren()) {
-                    val acuento: AudioCuento = ds.getValue(AudioCuento::class.java)!!
+                    val acuento: AudioStory = ds.getValue(AudioStory::class.java)!!
                     items.add(acuento)
                 }
-                adapter = AudioCuentoAdapter(context, items, object : ClickListener {
+                adapter = AudioStoryAdapter(context, items, object : ClickListener {
                     override fun onItemClick(view: View, index: Int) {
                         val intent = Intent(applicationContext, DetailsActivity::class.java)
-                        intent.putExtra("AUDIOCUENTO", adapter?.items?.get(index))
+                        intent.putExtra("AUDIOSTORY", adapter?.items?.get(index))
                         startActivity(intent)
                     }
 
