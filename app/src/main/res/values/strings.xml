@@ -3,4 +3,5 @@
     <string name="welcome_text">Hola, bienvenido</string>
     <string name="welcome_subtitle_text">¿Qué cuento te gustaría escuchar hoy?</string>
     <string name="searchHintSpanish">Buscar audiocuento...</string>
+    <string name="now_playing_text_spanish">Reproduciendo ahora</string>
 </resources>

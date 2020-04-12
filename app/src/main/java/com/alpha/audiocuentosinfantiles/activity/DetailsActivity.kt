@@ -7,10 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.SeekBar
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSeekBar
 import com.alpha.audiocuentosinfantiles.utils.MediaPlayerUtils
@@ -20,12 +17,15 @@ import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.mikhaellopez.circularimageview.CircularImageView
+import org.w3c.dom.Text
 
 
 class DetailsActivity : AppCompatActivity() {
 
     private var parentView: View? = null
+    private var progressBarLoading: ProgressBar? = null
     private var progressBar: AppCompatSeekBar? = null
+    private var textPlaying: TextView? = null
     private var buttonPlay: ImageButton? = null
     private var currentDurationText: TextView? = null
     private var totalDurationText: TextView? = null
@@ -39,8 +39,8 @@ class DetailsActivity : AppCompatActivity() {
     private var storageRef:StorageReference? = null
 
     private fun setMusicPlayerComponents() {
-        mediaPlayerUtils =
-            MediaPlayerUtils()
+        mediaPlayerUtils = MediaPlayerUtils()
+
         buttonPlay = findViewById(R.id.btn_play)
         parentView = findViewById(R.id.parent_view)
         progressBar = findViewById(R.id.seek_song_progressbar)
@@ -48,6 +48,7 @@ class DetailsActivity : AppCompatActivity() {
         totalDurationText = findViewById(R.id.total_duration)
         audioStoryTitle = findViewById(R.id.title_details)
         audioStoryImage = findViewById(R.id.image)
+        textPlaying = findViewById(R.id.textPlaying)
 
         mediaPlayer.setOnCompletionListener {
             buttonPlay?.setImageResource(R.drawable.ic_play_arrow)
@@ -62,12 +63,15 @@ class DetailsActivity : AppCompatActivity() {
             val url = it.toString()
             mediaPlayer.setDataSource(url)
             mediaPlayer.prepareAsync()
+            progressBarLoading?.visibility = View.INVISIBLE
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
+        progressBarLoading = findViewById(R.id.progressBarLoading)
+        progressBarLoading?.visibility = View.VISIBLE
 
         val audioStory = intent.getSerializableExtra("AUDIOSTORY") as? AudioStory
         storageRef = storage.getReferenceFromUrl(audioStory?.url!!)
@@ -99,9 +103,11 @@ class DetailsActivity : AppCompatActivity() {
     private fun buttonPlayerAction() {
         buttonPlay?.setOnClickListener {
             if (mediaPlayer.isPlaying()) {
+                textPlaying?.visibility = View.INVISIBLE
                 mediaPlayer.pause()
                 buttonPlay?.setImageResource(R.drawable.ic_play_arrow)
             } else {
+                textPlaying?.visibility = View.VISIBLE
                 mediaPlayer.start()
                 buttonPlay?.setImageResource(R.drawable.ic_pause)
                 handler.post(mUpdateTimeTask)
