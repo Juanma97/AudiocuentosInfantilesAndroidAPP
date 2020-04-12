@@ -4,8 +4,8 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -25,15 +25,18 @@ class MainActivity : AppCompatActivity() {
 
     var adapter: AudioStoryAdapter? = null
     var containerView: RecyclerView? = null
+    var progressBar: ProgressBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        progressBar = findViewById(R.id.progressBar)
 
         if(!Network.isNetworkActive(this)){
             startActivity(Intent(this, NoNetworkActivity::class.java))
         }
 
+        progressBar?.visibility = View.VISIBLE
         containerView = RecyclerViewWrapper
             .setUpRecyclerView(findViewById(R.id.containerView), this)
 
@@ -61,12 +64,11 @@ class MainActivity : AppCompatActivity() {
                             }
 
                         })
+                progressBar?.visibility = View.INVISIBLE
                 containerView?.adapter = adapter
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.d("FIREBASE", "Cancelled" + error.message)
-            }
+            override fun onCancelled(error: DatabaseError) {}
         })
 
 
@@ -74,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         val searchView: SearchView = findViewById(R.id.searchView)
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        searchView.queryHint = "Buscar audiocuento..."
+        searchView.queryHint = getString(R.string.searchHintSpanish)
 
         searchView.setOnQueryTextFocusChangeListener { v, hasFocus ->
 

@@ -24,26 +24,21 @@ import com.mikhaellopez.circularimageview.CircularImageView
 
 class DetailsActivity : AppCompatActivity() {
 
-    var parentView: View? = null
-    var progressBar: AppCompatSeekBar? = null
-
-    var buttonPlay: ImageButton? = null
-
-    var currentDurationText: TextView? = null
-    var totalDurationText: TextView? = null
-    var audioStoryTitle: TextView? = null
-    var audioStoryImage: CircularImageView? = null
-
+    private var parentView: View? = null
+    private var progressBar: AppCompatSeekBar? = null
+    private var buttonPlay: ImageButton? = null
+    private var currentDurationText: TextView? = null
+    private var totalDurationText: TextView? = null
+    private var audioStoryTitle: TextView? = null
+    private var audioStoryImage: CircularImageView? = null
     var mediaPlayer: MediaPlayer = MediaPlayer()
-
     var handler: Handler = Handler()
-
-    var totalDuration: Long? = null
+    private var totalDuration: Long? = null
     var mediaPlayerUtils: MediaPlayerUtils? = null
-    val storage = FirebaseStorage.getInstance()
-    var storageRef:StorageReference? = null
+    private val storage = FirebaseStorage.getInstance()
+    private var storageRef:StorageReference? = null
 
-    fun setMusicPlayerComponents() {
+    private fun setMusicPlayerComponents() {
         mediaPlayerUtils =
             MediaPlayerUtils()
         buttonPlay = findViewById(R.id.btn_play)
