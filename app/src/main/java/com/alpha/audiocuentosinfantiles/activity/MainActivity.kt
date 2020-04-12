@@ -14,6 +14,7 @@ import com.alpha.audiocuentosinfantiles.domain.AudioStory
 import com.alpha.audiocuentosinfantiles.recyclerview.AudioStoryAdapter
 import com.alpha.audiocuentosinfantiles.recyclerview.ClickListener
 import com.alpha.audiocuentosinfantiles.recyclerview.RecyclerViewWrapper
+import com.alpha.audiocuentosinfantiles.utils.Network
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -29,7 +30,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        containerView = RecyclerViewWrapper.setUpRecyclerView(findViewById(R.id.containerView), this)
+        if(!Network.isNetworkActive(this)){
+            startActivity(Intent(this, NoNetworkActivity::class.java))
+        }
+
+        containerView = RecyclerViewWrapper
+            .setUpRecyclerView(findViewById(R.id.containerView), this)
 
         val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference("audiocuentos")
