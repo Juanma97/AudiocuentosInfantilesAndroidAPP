@@ -2,6 +2,7 @@ package com.alpha.audiocuentosinfantiles.activity
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
@@ -13,6 +14,7 @@ import androidx.appcompat.widget.AppCompatSeekBar
 import com.alpha.audiocuentosinfantiles.utils.MediaPlayerUtils
 import com.alpha.audiocuentosinfantiles.R
 import com.alpha.audiocuentosinfantiles.domain.AudioStory
+import com.alpha.audiocuentosinfantiles.utils.Network
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -70,6 +72,11 @@ class DetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
+
+        if(!Network.isNetworkActive(this)){
+            startActivity(Intent(this, NoNetworkActivity::class.java))
+        }
+
         progressBarLoading = findViewById(R.id.progressBarLoading)
         progressBarLoading?.visibility = View.VISIBLE
 
