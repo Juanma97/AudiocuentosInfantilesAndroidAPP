@@ -44,6 +44,7 @@ class DetailsActivity : AppCompatActivity() {
         mediaPlayerUtils = MediaPlayerUtils()
 
         buttonPlay = findViewById(R.id.btn_play)
+        buttonPlay?.isEnabled = false
         parentView = findViewById(R.id.parent_view)
         progressBar = findViewById(R.id.seek_song_progressbar)
         currentDurationText = findViewById(R.id.tv_song_current_duration)
@@ -66,6 +67,7 @@ class DetailsActivity : AppCompatActivity() {
             mediaPlayer.setDataSource(url)
             mediaPlayer.prepareAsync()
             progressBarLoading?.visibility = View.INVISIBLE
+            buttonPlay?.isEnabled = false
         }
     }
 

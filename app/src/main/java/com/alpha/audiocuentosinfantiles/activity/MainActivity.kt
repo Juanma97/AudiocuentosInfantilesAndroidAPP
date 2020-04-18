@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         searchView.queryHint = getString(R.string.searchHintSpanish)
 
+
         searchView.setOnQueryTextFocusChangeListener { v, hasFocus ->
 
         }
