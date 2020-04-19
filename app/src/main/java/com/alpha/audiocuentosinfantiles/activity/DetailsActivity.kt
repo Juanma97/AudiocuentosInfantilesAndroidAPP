@@ -67,7 +67,7 @@ class DetailsActivity : AppCompatActivity() {
             mediaPlayer.setDataSource(url)
             mediaPlayer.prepareAsync()
             progressBarLoading?.visibility = View.INVISIBLE
-            buttonPlay?.isEnabled = false
+            buttonPlay?.isEnabled = true
         }
     }
 
