@@ -3,10 +3,14 @@ package com.alpha.audiocuentosinfantiles.activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.SearchView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.alpha.audiocuentosinfantiles.R
@@ -14,28 +18,39 @@ import com.alpha.audiocuentosinfantiles.domain.AudioStory
 import com.alpha.audiocuentosinfantiles.recyclerview.AudioStoryAdapter
 import com.alpha.audiocuentosinfantiles.recyclerview.ClickListener
 import com.alpha.audiocuentosinfantiles.recyclerview.RecyclerViewWrapper
+import com.alpha.audiocuentosinfantiles.utils.ConnectivityReceiver
 import com.alpha.audiocuentosinfantiles.utils.Network
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.io.File
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityReceiverListener {
 
     var adapter: AudioStoryAdapter? = null
     var containerView: RecyclerView? = null
     var progressBar: ProgressBar? = null
+    var noInternetConnection: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        registerReceiver(ConnectivityReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+
+        noInternetConnection = findViewById(R.id.textNoInternetConnection)
+        /** Check Internet Connection **/
+        /*if(!Network.isNetworkActive(this)){
+
+            print(filesDir.absolutePath)
+            for(file: File in filesDir.listFiles()){
+                Log.d("FILE: ", file.name)
+            }
+        }*/
+
         progressBar = findViewById(R.id.progressBar)
-
-        if(!Network.isNetworkActive(this)){
-            startActivity(Intent(this, NoNetworkActivity::class.java))
-        }
-
         progressBar?.visibility = View.VISIBLE
         containerView = RecyclerViewWrapper
             .setUpRecyclerView(findViewById(R.id.containerView), this)
@@ -94,5 +109,24 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
         })
+    }
+
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+        showNetworkMessage(isConnected)
+    }
+
+    private fun showNetworkMessage(isConnected: Boolean) {
+        if (!isConnected) {
+            Log.d("INTERNET: ", "No connection")
+            noInternetConnection?.visibility = View.VISIBLE
+        } else {
+            Log.d("INTERNET: ", "Connection")
+            noInternetConnection?.visibility = View.INVISIBLE
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        ConnectivityReceiver.connectivityReceiverListener = this
     }
 }

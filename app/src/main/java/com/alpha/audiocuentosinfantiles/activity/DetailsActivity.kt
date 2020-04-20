@@ -2,7 +2,6 @@ package com.alpha.audiocuentosinfantiles.activity
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
@@ -11,15 +10,16 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSeekBar
-import com.alpha.audiocuentosinfantiles.utils.MediaPlayerUtils
 import com.alpha.audiocuentosinfantiles.R
 import com.alpha.audiocuentosinfantiles.domain.AudioStory
-import com.alpha.audiocuentosinfantiles.utils.Network
+import com.alpha.audiocuentosinfantiles.utils.MediaPlayerUtils
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.mikhaellopez.circularimageview.CircularImageView
-import org.w3c.dom.Text
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 class DetailsActivity : AppCompatActivity() {
@@ -39,6 +39,8 @@ class DetailsActivity : AppCompatActivity() {
     var mediaPlayerUtils: MediaPlayerUtils? = null
     private val storage = FirebaseStorage.getInstance()
     private var storageRef:StorageReference? = null
+    private var btnDownload:ImageButton? = null
+    private var audioStory: AudioStory? = null
 
     private fun setMusicPlayerComponents() {
         mediaPlayerUtils = MediaPlayerUtils()
@@ -52,6 +54,14 @@ class DetailsActivity : AppCompatActivity() {
         audioStoryTitle = findViewById(R.id.title_details)
         audioStoryImage = findViewById(R.id.image)
         textPlaying = findViewById(R.id.textPlaying)
+        btnDownload = findViewById(R.id.btn_download)
+
+        btnDownload?.setOnClickListener {
+            storageRef?.downloadUrl?.addOnSuccessListener {
+                val url = it.toString()
+                writeInternalDemo(url)
+            }
+        }
 
         mediaPlayer.setOnCompletionListener {
             buttonPlay?.setImageResource(R.drawable.ic_play_arrow)
@@ -71,23 +81,48 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
+    private fun writeInternalDemo(url: String) { // Path will be: /data/data/<YOUR_APP_PACKAGE_NAME>/hello.txt
+        val file = File(filesDir, audioStory?.title + ".mp3")
+        // Display the absolute path of Internal Storage
+        //this.textViewPathHint.setText(file.getAbsolutePath())
+        var fos: FileOutputStream? = null
+        try {
+            fos = FileOutputStream(file)
+            //fos.write(this.demoFileContent.getBytes())
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Failed: " + e.message, Toast.LENGTH_LONG).show()
+        } finally {
+            if (fos != null) {
+                try {
+                    Toast.makeText(
+                        this,
+                        "Write successfully!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    fos.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            } else {
+                Toast.makeText(this, "Failed to write!", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
-
-        if(!Network.isNetworkActive(this)){
-            startActivity(Intent(this, NoNetworkActivity::class.java))
-        }
+        audioStory = intent.getSerializableExtra("AUDIOSTORY") as? AudioStory
 
         progressBarLoading = findViewById(R.id.progressBarLoading)
         progressBarLoading?.visibility = View.VISIBLE
 
-        val audioStory = intent.getSerializableExtra("AUDIOSTORY") as? AudioStory
         storageRef = storage.getReferenceFromUrl(audioStory?.url!!)
         setMusicPlayerComponents()
-        audioStoryTitle?.text = audioStory.title
+        audioStoryTitle?.text = audioStory?.title
 
-        Glide.with(this).load(audioStory.url_image).into(audioStoryImage as ImageView)
+        Glide.with(this).load(audioStory?.url_image).into(audioStoryImage as ImageView)
 
         progressBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, b: Boolean) {
@@ -163,5 +198,6 @@ class DetailsActivity : AppCompatActivity() {
         if (item.getItemId() == android.R.id.home) finish()
         return super.onOptionsItemSelected(item)
     }
+
 }
 
