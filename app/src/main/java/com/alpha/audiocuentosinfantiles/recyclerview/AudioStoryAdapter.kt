@@ -42,7 +42,11 @@ class AudioStoryAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items?.get(position)
         holder.title?.text = item?.title
-        Glide.with(context).load(item?.url_image).into(holder.image as ImageView)
+        if(!item?.url_image?.isEmpty()!!){
+            Glide.with(context).load(item?.url_image).into(holder.image as ImageView)
+        }else{
+            Glide.with(context).load(R.drawable.music_disk).into(holder.image as ImageView)
+        }
     }
 
     override fun getItemId(p0: Int): Long {

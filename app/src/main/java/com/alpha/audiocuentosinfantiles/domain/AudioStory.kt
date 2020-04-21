@@ -6,7 +6,6 @@ import java.io.Serializable
 @IgnoreExtraProperties
 data class AudioStory(
     val id: Int = 0,
-    val duration: String = "",
     val title: String = "",
     val description: String = "",
     val url: String = "",

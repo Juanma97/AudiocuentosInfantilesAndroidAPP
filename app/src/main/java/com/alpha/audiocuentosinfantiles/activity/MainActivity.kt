@@ -38,53 +38,16 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        registerReceiver(ConnectivityReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-
         noInternetConnection = findViewById(R.id.textNoInternetConnection)
-        /** Check Internet Connection **/
-        /*if(!Network.isNetworkActive(this)){
-
-            print(filesDir.absolutePath)
-            for(file: File in filesDir.listFiles()){
-                Log.d("FILE: ", file.name)
-            }
-        }*/
+        registerReceiver(ConnectivityReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+        if(!Network.isNetworkActive(this)) showNetworkMessage(false)
 
         progressBar = findViewById(R.id.progressBar)
         progressBar?.visibility = View.VISIBLE
         containerView = RecyclerViewWrapper
             .setUpRecyclerView(findViewById(R.id.containerView), this)
 
-        val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference("audiocuentos")
-        val items = ArrayList<AudioStory>()
-        val context = this
-        myRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (ds in dataSnapshot.getChildren()) {
-                    val audioStory: AudioStory = ds.getValue(
-                        AudioStory::class.java)!!
-                    items.add(audioStory)
-                }
-                adapter =
-                    AudioStoryAdapter(
-                        context,
-                        items,
-                        object :
-                            ClickListener {
-                            override fun onItemClick(view: View, index: Int) {
-                                val intent = Intent(applicationContext, DetailsActivity::class.java)
-                                intent.putExtra("AUDIOSTORY", adapter?.items?.get(index))
-                                startActivity(intent)
-                            }
 
-                        })
-                progressBar?.visibility = View.INVISIBLE
-                containerView?.adapter = adapter
-            }
-
-            override fun onCancelled(error: DatabaseError) {}
-        })
 
 
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
@@ -116,13 +79,59 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
     }
 
     private fun showNetworkMessage(isConnected: Boolean) {
+        var cuentos =  ArrayList<AudioStory>()
+        var id = 0
         if (!isConnected) {
             Log.d("INTERNET: ", "No connection")
             noInternetConnection?.visibility = View.VISIBLE
+            print(filesDir.absolutePath)
+            for(file: File in filesDir.listFiles()){
+                cuentos.add(AudioStory(id, file.name, "", "", ""))
+                Log.d("FILE: ", file.name)
+            }
+            adapter =
+                AudioStoryAdapter(this, cuentos, object : ClickListener {
+                    override fun onItemClick(view: View, index: Int) {
+                        val intent = Intent(applicationContext, DetailsActivity::class.java)
+                        intent.putExtra("AUDIOSTORY", adapter?.items?.get(index))
+                        startActivity(intent)
+                    }
+                })
+            progressBar?.visibility = View.INVISIBLE
+            containerView?.adapter = adapter
         } else {
             Log.d("INTERNET: ", "Connection")
+            getData()
             noInternetConnection?.visibility = View.INVISIBLE
         }
+    }
+
+    fun getData() {
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.getReference("audiocuentos")
+        val items = ArrayList<AudioStory>()
+        val context = this
+        myRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (ds in dataSnapshot.getChildren()) {
+                    val audioStory: AudioStory = ds.getValue(
+                        AudioStory::class.java)!!
+                    items.add(audioStory)
+                }
+                adapter =
+                    AudioStoryAdapter(context, items, object : ClickListener {
+                        override fun onItemClick(view: View, index: Int) {
+                            val intent = Intent(applicationContext, DetailsActivity::class.java)
+                            intent.putExtra("AUDIOSTORY", adapter?.items?.get(index))
+                            startActivity(intent)
+                        }
+                    })
+                progressBar?.visibility = View.INVISIBLE
+                containerView?.adapter = adapter
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
 
     override fun onResume() {
