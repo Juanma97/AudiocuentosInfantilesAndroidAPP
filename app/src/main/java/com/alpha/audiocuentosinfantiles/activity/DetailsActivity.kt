@@ -2,7 +2,9 @@ package com.alpha.audiocuentosinfantiles.activity
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.MenuItem
@@ -10,6 +12,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSeekBar
+import com.alpha.audiocuentosinfantiles.DownloadAudioFromUrl
 import com.alpha.audiocuentosinfantiles.R
 import com.alpha.audiocuentosinfantiles.domain.AudioStory
 import com.alpha.audiocuentosinfantiles.utils.MediaPlayerUtils
@@ -17,9 +20,7 @@ import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.mikhaellopez.circularimageview.CircularImageView
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
 
 
 class DetailsActivity : AppCompatActivity() {
@@ -55,12 +56,28 @@ class DetailsActivity : AppCompatActivity() {
         audioStoryImage = findViewById(R.id.image)
         textPlaying = findViewById(R.id.textPlaying)
         btnDownload = findViewById(R.id.btn_download)
+        btnDownload?.isEnabled = false
 
+    }
+
+    private fun prepareButtonDownload() {
+        btnDownload?.isEnabled = true
         btnDownload?.setOnClickListener {
             storageRef?.downloadUrl?.addOnSuccessListener {
                 val url = it.toString()
-                writeInternalDemo(url)
+                DownloadAudioFromUrl(this).execute(url)
+                //writeInternalDemo(url)
             }
+        }
+    }
+
+    private fun prepareMediaPlayerStreaming() {
+        storageRef?.downloadUrl?.addOnSuccessListener {
+            val url = it.toString()
+            mediaPlayer.setDataSource(url)
+            mediaPlayer.prepareAsync()
+            progressBarLoading?.visibility = View.INVISIBLE
+            buttonPlay?.isEnabled = true
         }
 
         mediaPlayer.setOnCompletionListener {
@@ -71,24 +88,14 @@ class DetailsActivity : AppCompatActivity() {
             totalDuration = mediaPlayer.duration.toLong()
             updateTimerAndSeekbar()
         }
-
-        storageRef?.downloadUrl?.addOnSuccessListener {
-            val url = it.toString()
-            mediaPlayer.setDataSource(url)
-            mediaPlayer.prepareAsync()
-            progressBarLoading?.visibility = View.INVISIBLE
-            buttonPlay?.isEnabled = true
-        }
     }
 
-    private fun writeInternalDemo(url: String) { // Path will be: /data/data/<YOUR_APP_PACKAGE_NAME>/hello.txt
-        val file = File(filesDir, audioStory?.title + ".mp3")
-        // Display the absolute path of Internal Storage
-        //this.textViewPathHint.setText(file.getAbsolutePath())
+    private fun writeInternalDemo(url: String) { // Path will be: /data/data/<YOUR_APP_PACKAGE_NAME>/hello.mp3
+        val file = File(filesDir, audioStory?.title?.replace(" ", "_") + ".mp3")
         var fos: FileOutputStream? = null
         try {
             fos = FileOutputStream(file)
-            //fos.write(this.demoFileContent.getBytes())
+            fos.write(file.readBytes())
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(this, "Failed: " + e.message, Toast.LENGTH_LONG).show()
@@ -110,19 +117,65 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
+    private fun readInternalDemo(fileName: String) {
+        val file = File(filesDir, fileName.replace(" ", "_"))
+        if (!file.exists()) {
+            Toast.makeText(this, "Failed: file does not exist", Toast.LENGTH_LONG).show()
+            return
+        }
+        var fis: FileInputStream? = null
+        var textContent = ""
+        try {
+            fis = FileInputStream(file)
+            mediaPlayer.setDataSource(fis.fd)
+            mediaPlayer.prepare()
+        } catch (e: java.lang.Exception) {
+            Toast.makeText(this, "Failed: " + e.message, Toast.LENGTH_LONG).show()
+        } finally {
+            if (fis != null) {
+                Toast.makeText(this, "Read Successfully: $textContent", Toast.LENGTH_LONG).show()
+                progressBarLoading?.visibility = View.INVISIBLE
+                buttonPlay?.isEnabled = true
+                try {
+                    fis.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Toast.makeText(this, "Failed to read!", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
-        audioStory = intent.getSerializableExtra("AUDIOSTORY") as? AudioStory
-
         progressBarLoading = findViewById(R.id.progressBarLoading)
         progressBarLoading?.visibility = View.VISIBLE
 
-        storageRef = storage.getReferenceFromUrl(audioStory?.url!!)
-        setMusicPlayerComponents()
-        audioStoryTitle?.text = audioStory?.title
+        audioStory = intent.getSerializableExtra("AUDIOSTORY") as? AudioStory
 
-        Glide.with(this).load(audioStory?.url_image).into(audioStoryImage as ImageView)
+        setMusicPlayerComponents()
+
+        if(audioStory?.url?.isEmpty()!!){
+            Glide.with(this).load(R.drawable.music_disk).into(audioStoryImage as ImageView)
+            readInternalDemo(audioStory?.title!!)
+            mediaPlayer.setOnCompletionListener {
+                buttonPlay?.setImageResource(R.drawable.ic_play_arrow)
+            }
+
+            mediaPlayer.setOnPreparedListener {
+                totalDuration = mediaPlayer.duration.toLong()
+                updateTimerAndSeekbar()
+            }
+            progressBarLoading?.visibility = View.INVISIBLE
+        }else{
+            storageRef = storage.getReferenceFromUrl(audioStory?.url!!)
+            Glide.with(this).load(audioStory?.url_image).into(audioStoryImage as ImageView)
+            prepareMediaPlayerStreaming()
+            prepareButtonDownload()
+        }
+
+        audioStoryTitle?.text = audioStory?.title
 
         progressBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, b: Boolean) {
