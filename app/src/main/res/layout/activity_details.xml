@@ -11,12 +11,6 @@
     android:background="@color/colorPrimary">
 
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@color/colorPrimary"/>
-
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -139,6 +133,12 @@
             android:indeterminate="true"
             android:visibility="invisible"
             android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@color/colorPrimary" />
     </LinearLayout>
 
     <androidx.appcompat.widget.Toolbar
