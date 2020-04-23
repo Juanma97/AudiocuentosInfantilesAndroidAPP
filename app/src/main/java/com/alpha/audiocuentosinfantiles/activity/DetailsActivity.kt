@@ -2,9 +2,7 @@ package com.alpha.audiocuentosinfantiles.activity
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.MenuItem
@@ -65,8 +63,8 @@ class DetailsActivity : AppCompatActivity() {
         btnDownload?.setOnClickListener {
             storageRef?.downloadUrl?.addOnSuccessListener {
                 val url = it.toString()
-                DownloadAudioFromUrl(this).execute(url)
-                //writeInternalDemo(url)
+                DownloadAudioFromUrl(this, audioStory?.title?.replace(" ", "_") + ".mp3")
+                    .execute(url)
             }
         }
     }
@@ -90,54 +88,28 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun writeInternalDemo(url: String) { // Path will be: /data/data/<YOUR_APP_PACKAGE_NAME>/hello.mp3
-        val file = File(filesDir, audioStory?.title?.replace(" ", "_") + ".mp3")
-        var fos: FileOutputStream? = null
-        try {
-            fos = FileOutputStream(file)
-            fos.write(file.readBytes())
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, "Failed: " + e.message, Toast.LENGTH_LONG).show()
-        } finally {
-            if (fos != null) {
-                try {
-                    Toast.makeText(
-                        this,
-                        "Write successfully!",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    fos.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            } else {
-                Toast.makeText(this, "Failed to write!", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
 
-    private fun readInternalDemo(fileName: String) {
+    private fun readFileInternalStorage(fileName: String) {
         val file = File(filesDir, fileName.replace(" ", "_"))
         if (!file.exists()) {
             Toast.makeText(this, "Failed: file does not exist", Toast.LENGTH_LONG).show()
             return
         }
-        var fis: FileInputStream? = null
+        var fileInputStream: FileInputStream? = null
         var textContent = ""
         try {
-            fis = FileInputStream(file)
-            mediaPlayer.setDataSource(fis.fd)
+            fileInputStream = FileInputStream(file)
+            mediaPlayer.setDataSource(fileInputStream.fd)
             mediaPlayer.prepare()
         } catch (e: java.lang.Exception) {
             Toast.makeText(this, "Failed: " + e.message, Toast.LENGTH_LONG).show()
         } finally {
-            if (fis != null) {
+            if (fileInputStream != null) {
                 Toast.makeText(this, "Read Successfully: $textContent", Toast.LENGTH_LONG).show()
                 progressBarLoading?.visibility = View.INVISIBLE
                 buttonPlay?.isEnabled = true
                 try {
-                    fis.close()
+                    fileInputStream.close()
                 } catch (e: IOException) {
                     e.printStackTrace()
                     Toast.makeText(this, "Failed to read!", Toast.LENGTH_LONG).show()
@@ -158,7 +130,7 @@ class DetailsActivity : AppCompatActivity() {
 
         if(audioStory?.url?.isEmpty()!!){
             Glide.with(this).load(R.drawable.music_disk).into(audioStoryImage as ImageView)
-            readInternalDemo(audioStory?.title!!)
+            readFileInternalStorage(audioStory?.title!!)
             mediaPlayer.setOnCompletionListener {
                 buttonPlay?.setImageResource(R.drawable.ic_play_arrow)
             }

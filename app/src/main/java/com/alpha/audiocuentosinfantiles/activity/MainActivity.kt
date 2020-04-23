@@ -37,25 +37,21 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         noInternetConnection = findViewById(R.id.textNoInternetConnection)
-        registerReceiver(ConnectivityReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-        if(!Network.isNetworkActive(this)) showNetworkMessage(false)
 
-        progressBar = findViewById(R.id.progressBar)
-        progressBar?.visibility = View.VISIBLE
-        containerView = RecyclerViewWrapper
-            .setUpRecyclerView(findViewById(R.id.containerView), this)
+        setupProgressBar()
+        setupContainerView()
+        setupAndCheckNetwork()
+        setupSearch()
 
+    }
 
-
-
+    private fun setupSearch() {
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView: SearchView = findViewById(R.id.searchView)
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         searchView.queryHint = getString(R.string.searchHintSpanish)
-
 
         searchView.setOnQueryTextFocusChangeListener { v, hasFocus ->
 
@@ -74,23 +70,36 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
         })
     }
 
+    private fun setupAndCheckNetwork() {
+        registerReceiver(ConnectivityReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+        if(!Network.isNetworkActive(this)) showNetworkMessage(false)
+    }
+
+    private fun setupContainerView() {
+        containerView = RecyclerViewWrapper.setUpRecyclerView(findViewById(R.id.containerView), this)
+    }
+
+    private fun setupProgressBar() {
+        progressBar = findViewById(R.id.progressBar)
+        progressBar?.visibility = View.VISIBLE
+    }
+
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
         showNetworkMessage(isConnected)
     }
 
     private fun showNetworkMessage(isConnected: Boolean) {
-        var cuentos =  ArrayList<AudioStory>()
-        var id = 0
+        val audioStories =  ArrayList<AudioStory>()
+        val id = 0
+
         if (!isConnected) {
             Log.d("INTERNET: ", "No connection")
             noInternetConnection?.visibility = View.VISIBLE
-            print(filesDir.absolutePath)
             for(file: File in filesDir.listFiles()){
-                cuentos.add(AudioStory(id, file.name, "", "", ""))
+                audioStories.add(AudioStory(id, file.name.replace("_", " "), "", "", ""))
                 Log.d("FILE: ", file.name)
             }
-            adapter =
-                AudioStoryAdapter(this, cuentos, object : ClickListener {
+            adapter = AudioStoryAdapter(this, audioStories, object : ClickListener {
                     override fun onItemClick(view: View, index: Int) {
                         val intent = Intent(applicationContext, DetailsActivity::class.java)
                         intent.putExtra("AUDIOSTORY", adapter?.items?.get(index))
@@ -118,8 +127,7 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
                         AudioStory::class.java)!!
                     items.add(audioStory)
                 }
-                adapter =
-                    AudioStoryAdapter(context, items, object : ClickListener {
+                adapter = AudioStoryAdapter(context, items, object : ClickListener {
                         override fun onItemClick(view: View, index: Int) {
                             val intent = Intent(applicationContext, DetailsActivity::class.java)
                             intent.putExtra("AUDIOSTORY", adapter?.items?.get(index))

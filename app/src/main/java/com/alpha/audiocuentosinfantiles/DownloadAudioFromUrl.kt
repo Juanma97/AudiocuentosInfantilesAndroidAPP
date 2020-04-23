@@ -5,15 +5,14 @@ import android.os.AsyncTask
 import java.io.BufferedInputStream
 import java.net.URL
 
-class DownloadAudioFromUrl(val context: Context): AsyncTask<String, String, String>() {
+class DownloadAudioFromUrl(val context: Context, val fileName: String): AsyncTask<String, String, String>() {
 
-    override fun doInBackground(vararg p0: String?): String {
-        val url  = URL(p0[0])
+    override fun doInBackground(vararg url: String?): String {
+        val url  = URL(url[0])
         val connection = url.openConnection()
         connection.connect()
         val inputStream = BufferedInputStream(url.openStream())
-        val filename = "audio.mp3"
-        val outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE)
+        val outputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)
         val data = ByteArray(1024)
         var count = inputStream.read(data)
         var total = count
