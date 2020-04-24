@@ -15,6 +15,7 @@ import com.alpha.audiocuentosinfantiles.R
 import com.alpha.audiocuentosinfantiles.domain.AudioStory
 import com.alpha.audiocuentosinfantiles.utils.MediaPlayerUtils
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.mikhaellopez.circularimageview.CircularImageView
@@ -65,6 +66,8 @@ class DetailsActivity : AppCompatActivity() {
                 val url = it.toString()
                 DownloadAudioFromUrl(this, audioStory?.title?.replace(" ", "_") + ".mp3")
                     .execute(url)
+
+                //Snackbar.make(, "Descargando audiocuento ...", Snackbar.LENGTH_LONG)
             }
         }
     }
@@ -91,28 +94,23 @@ class DetailsActivity : AppCompatActivity() {
 
     private fun readFileInternalStorage(fileName: String) {
         val file = File(filesDir, fileName.replace(" ", "_"))
-        if (!file.exists()) {
-            Toast.makeText(this, "Failed: file does not exist", Toast.LENGTH_LONG).show()
-            return
-        }
+        if (!file.exists()) return
+
         var fileInputStream: FileInputStream? = null
-        var textContent = ""
         try {
             fileInputStream = FileInputStream(file)
             mediaPlayer.setDataSource(fileInputStream.fd)
             mediaPlayer.prepare()
         } catch (e: java.lang.Exception) {
-            Toast.makeText(this, "Failed: " + e.message, Toast.LENGTH_LONG).show()
+
         } finally {
             if (fileInputStream != null) {
-                Toast.makeText(this, "Read Successfully: $textContent", Toast.LENGTH_LONG).show()
                 progressBarLoading?.visibility = View.INVISIBLE
                 buttonPlay?.isEnabled = true
                 try {
                     fileInputStream.close()
                 } catch (e: IOException) {
                     e.printStackTrace()
-                    Toast.makeText(this, "Failed to read!", Toast.LENGTH_LONG).show()
                 }
             }
         }

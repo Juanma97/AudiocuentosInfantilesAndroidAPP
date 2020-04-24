@@ -96,7 +96,8 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
             Log.d("INTERNET: ", "No connection")
             noInternetConnection?.visibility = View.VISIBLE
             for(file: File in filesDir.listFiles()){
-                audioStories.add(AudioStory(id, file.name.replace("_", " "), "", "", ""))
+                audioStories.add(AudioStory(id, file.name.replace("_", " ")
+                    .replace(".mp3", ""), "", "", ""))
                 Log.d("FILE: ", file.name)
             }
             adapter = AudioStoryAdapter(this, audioStories, object : ClickListener {

@@ -24,7 +24,6 @@ class DownloadAudioFromUrl(val context: Context, val fileName: String): AsyncTas
         outputStream.flush()
         outputStream.close()
         inputStream.close()
-        println("finished saving audio.mp3 to internal storage")
         return "Success"
     }
 
