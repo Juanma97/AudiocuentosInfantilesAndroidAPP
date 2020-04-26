@@ -41,6 +41,7 @@ class DetailsActivity : AppCompatActivity() {
     private var storageRef:StorageReference? = null
     private var btnDownload:ImageButton? = null
     private var audioStory: AudioStory? = null
+    private var relativeLayout: RelativeLayout? = null
 
     private fun setMusicPlayerComponents() {
         mediaPlayerUtils = MediaPlayerUtils()
@@ -55,19 +56,19 @@ class DetailsActivity : AppCompatActivity() {
         audioStoryImage = findViewById(R.id.image)
         textPlaying = findViewById(R.id.textPlaying)
         btnDownload = findViewById(R.id.btn_download)
-        btnDownload?.isEnabled = false
+        btnDownload?.visibility = View.INVISIBLE
 
     }
 
     private fun prepareButtonDownload() {
-        btnDownload?.isEnabled = true
+        btnDownload?.visibility = View.VISIBLE
         btnDownload?.setOnClickListener {
             storageRef?.downloadUrl?.addOnSuccessListener {
                 val url = it.toString()
                 DownloadAudioFromUrl(this, audioStory?.title?.replace(" ", "_") + ".mp3")
                     .execute(url)
 
-                //Snackbar.make(, "Descargando audiocuento ...", Snackbar.LENGTH_LONG)
+                Snackbar.make(relativeLayout!!, "Descargando audiocuento ...", Snackbar.LENGTH_LONG).show()
             }
         }
     }
@@ -101,12 +102,12 @@ class DetailsActivity : AppCompatActivity() {
             fileInputStream = FileInputStream(file)
             mediaPlayer.setDataSource(fileInputStream.fd)
             mediaPlayer.prepare()
+            progressBarLoading?.visibility = View.INVISIBLE
+            buttonPlay?.isEnabled = true
         } catch (e: java.lang.Exception) {
 
         } finally {
             if (fileInputStream != null) {
-                progressBarLoading?.visibility = View.INVISIBLE
-                buttonPlay?.isEnabled = true
                 try {
                     fileInputStream.close()
                 } catch (e: IOException) {
@@ -121,6 +122,7 @@ class DetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_details)
         progressBarLoading = findViewById(R.id.progressBarLoading)
         progressBarLoading?.visibility = View.VISIBLE
+        relativeLayout = findViewById(R.id.parent_view)
 
         audioStory = intent.getSerializableExtra("AUDIOSTORY") as? AudioStory
 
