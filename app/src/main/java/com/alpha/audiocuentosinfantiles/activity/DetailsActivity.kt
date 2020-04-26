@@ -56,19 +56,25 @@ class DetailsActivity : AppCompatActivity() {
         audioStoryImage = findViewById(R.id.image)
         textPlaying = findViewById(R.id.textPlaying)
         btnDownload = findViewById(R.id.btn_download)
-        btnDownload?.visibility = View.INVISIBLE
+        btnDownload?.visibility = View.GONE
 
     }
 
     private fun prepareButtonDownload() {
         btnDownload?.visibility = View.VISIBLE
         btnDownload?.setOnClickListener {
-            storageRef?.downloadUrl?.addOnSuccessListener {
-                val url = it.toString()
-                DownloadAudioFromUrl(this, audioStory?.title?.replace(" ", "_") + ".mp3")
-                    .execute(url)
+            val file = File(filesDir, audioStory?.title?.replace(" ", "_") + ".mp3")
+            if (!file.exists()){
+                storageRef?.downloadUrl?.addOnSuccessListener {
+                    val url = it.toString()
+                    DownloadAudioFromUrl(this, audioStory?.title?.replace(" ", "_") + ".mp3")
+                        .execute(url)
 
-                Snackbar.make(relativeLayout!!, "Descargando audiocuento ...", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(relativeLayout!!, "Descargando audiocuento ...", Snackbar.LENGTH_LONG).show()
+                }
+
+            }else{
+                Snackbar.make(relativeLayout!!, "Ya ha descargado este cuento :)", Snackbar.LENGTH_LONG).show()
             }
         }
     }
@@ -94,7 +100,7 @@ class DetailsActivity : AppCompatActivity() {
 
 
     private fun readFileInternalStorage(fileName: String) {
-        val file = File(filesDir, fileName.replace(" ", "_"))
+        val file = File(filesDir, fileName.replace(" ", "_") + ".mp3")
         if (!file.exists()) return
 
         var fileInputStream: FileInputStream? = null
