@@ -84,8 +84,6 @@ class DetailsActivity : AppCompatActivity() {
             val url = it.toString()
             mediaPlayer.setDataSource(url)
             mediaPlayer.prepareAsync()
-            progressBarLoading?.visibility = View.INVISIBLE
-            buttonPlay?.isEnabled = true
         }
 
         mediaPlayer.setOnCompletionListener {
@@ -95,6 +93,8 @@ class DetailsActivity : AppCompatActivity() {
         mediaPlayer.setOnPreparedListener {
             totalDuration = mediaPlayer.duration.toLong()
             updateTimerAndSeekbar()
+            progressBarLoading?.visibility = View.INVISIBLE
+            buttonPlay?.isEnabled = true
         }
     }
 
@@ -133,6 +133,7 @@ class DetailsActivity : AppCompatActivity() {
         audioStory = intent.getSerializableExtra("AUDIOSTORY") as? AudioStory
 
         setMusicPlayerComponents()
+        buttonPlayerAction()
 
         if(audioStory?.url?.isEmpty()!!){
             Glide.with(this).load(R.drawable.music_disk).into(audioStoryImage as ImageView)
@@ -172,7 +173,7 @@ class DetailsActivity : AppCompatActivity() {
                 handler.post(mUpdateTimeTask)
             }
         })
-        buttonPlayerAction()
+
     }
 
     private fun buttonPlayerAction() {
