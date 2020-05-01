@@ -21,6 +21,9 @@ import com.alpha.audiocuentosinfantiles.recyclerview.RecyclerViewWrapper
 import com.alpha.audiocuentosinfantiles.utils.AdmobUtils
 import com.alpha.audiocuentosinfantiles.utils.ConnectivityReceiver
 import com.alpha.audiocuentosinfantiles.utils.Network
+import com.google.ads.consent.ConsentInfoUpdateListener
+import com.google.ads.consent.ConsentInformation
+import com.google.ads.consent.ConsentStatus
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
@@ -44,6 +47,12 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         noInternetConnection = findViewById(R.id.textNoInternetConnection)
+
+        var consentInformation: ConsentInformation = ConsentInformation.getInstance(this)
+        var publisherIds: Array<String> = arrayOf("pub-0123456789012345")
+        consentInformation.requestConsentInfoUpdate(publisherIds, ConsentInfoUp1dateListener {
+
+        })
 
         // OneSignal Initialization
         OneSignal.startInit(this)
