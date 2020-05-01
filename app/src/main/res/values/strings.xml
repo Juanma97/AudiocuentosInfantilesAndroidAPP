@@ -2,6 +2,8 @@
     <string name="app_name">Audiocuentos Infantiles</string>
     <string name="welcome_text">Hola, bienvenido</string>
     <string name="welcome_subtitle_text">¿Qué cuento te gustaría escuchar hoy?</string>
-    <string name="searchHintSpanish">Buscar audiocuento...</string>
+    <string name="searchHintSpanish">Buscar audiocuento…</string>
     <string name="now_playing_text_spanish">Reproduciendo ahora</string>
+    <string name="APP_ADMOB_ID">ca-app-pub-3535087308150372~2532898766</string>
+    <string name="INTERSTICIAL_ADMOB_ID">ca-app-pub-3535087308150372/2589287820</string>
 </resources>
