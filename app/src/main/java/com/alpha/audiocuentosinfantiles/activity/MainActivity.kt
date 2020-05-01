@@ -18,6 +18,7 @@ import com.alpha.audiocuentosinfantiles.domain.AudioStory
 import com.alpha.audiocuentosinfantiles.recyclerview.AudioStoryAdapter
 import com.alpha.audiocuentosinfantiles.recyclerview.ClickListener
 import com.alpha.audiocuentosinfantiles.recyclerview.RecyclerViewWrapper
+import com.alpha.audiocuentosinfantiles.utils.AdmobUtils
 import com.alpha.audiocuentosinfantiles.utils.ConnectivityReceiver
 import com.alpha.audiocuentosinfantiles.utils.Network
 import com.google.android.gms.ads.AdListener
@@ -34,7 +35,6 @@ import java.io.File
 
 class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityReceiverListener {
 
-    private lateinit var mInterstitialAd: InterstitialAd
     var adapter: AudioStoryAdapter? = null
     var containerView: RecyclerView? = null
     var progressBar: ProgressBar? = null
@@ -55,40 +55,6 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
         setupContainerView()
         setupAndCheckNetwork()
         setupSearch()
-
-        MobileAds.initialize(this, R.string.APP_ADMOB_ID.toString())
-
-        /** Intersticial **/
-        mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-        mInterstitialAd.loadAd(AdRequest.Builder().build())
-
-        mInterstitialAd.adListener = object:AdListener() {
-            override fun onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-                mInterstitialAd.show()
-            }
-
-            override fun onAdFailedToLoad(errorCode: Int) {
-                // Code to be executed when an ad request fails.
-            }
-
-            override fun onAdOpened() {
-                // Code to be executed when the ad is displayed.
-            }
-
-            override fun onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-            }
-
-            override fun onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
-
-            override fun onAdClosed() {
-                // Code to be executed when the interstitial ad is closed.
-            }
-        }
 
     }
 

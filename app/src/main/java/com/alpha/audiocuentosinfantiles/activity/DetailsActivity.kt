@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
@@ -13,8 +14,14 @@ import androidx.appcompat.widget.AppCompatSeekBar
 import com.alpha.audiocuentosinfantiles.DownloadAudioFromUrl
 import com.alpha.audiocuentosinfantiles.R
 import com.alpha.audiocuentosinfantiles.domain.AudioStory
+import com.alpha.audiocuentosinfantiles.utils.AdmobUtils
 import com.alpha.audiocuentosinfantiles.utils.MediaPlayerUtils
+import com.alpha.audiocuentosinfantiles.utils.Network
 import com.bumptech.glide.Glide
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -24,6 +31,7 @@ import java.io.*
 
 class DetailsActivity : AppCompatActivity() {
 
+    private var mInterstitialAd: InterstitialAd? = null
     private var parentView: View? = null
     private var progressBarLoading: ProgressBar? = null
     private var progressBar: AppCompatSeekBar? = null
@@ -126,6 +134,37 @@ class DetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
+        MobileAds.initialize(this, R.string.APP_ADMOB_ID.toString())
+
+        mInterstitialAd = InterstitialAd(this)
+        mInterstitialAd?.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd?.loadAd(AdRequest.Builder().build())
+        mInterstitialAd?.adListener = object: AdListener(){
+            override fun onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            override fun onAdFailedToLoad(errorCode: Int) {
+                // Code to be executed when an ad request fails.
+            }
+
+            override fun onAdOpened() {
+                // Code to be executed when the ad is displayed.
+            }
+
+            override fun onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            override fun onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            override fun onAdClosed() {
+                // Code to be executed when the interstitial ad is closed.
+            }
+        }
+
         progressBarLoading = findViewById(R.id.progressBarLoading)
         progressBarLoading?.visibility = View.VISIBLE
         relativeLayout = findViewById(R.id.parent_view)
@@ -223,6 +262,12 @@ class DetailsActivity : AppCompatActivity() {
         super.onDestroy()
         handler.removeCallbacks(mUpdateTimeTask)
         mediaPlayer.release()
+        if(mInterstitialAd?.isLoaded!!) mInterstitialAd?.show()
+    }
+
+    override fun onBackPressed() {
+        mediaPlayer.stop()
+        super.onBackPressed()
     }
 
 
