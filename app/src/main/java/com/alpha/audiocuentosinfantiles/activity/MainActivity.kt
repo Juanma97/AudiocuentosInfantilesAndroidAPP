@@ -190,9 +190,10 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
             Log.d("INTERNET: ", "No connection")
             noInternetConnection?.visibility = View.VISIBLE
             for(file: File in filesDir.listFiles()){
-                audioStories.add(AudioStory(id, file.name.replace("_", " ")
-                    .replace(".mp3", ""), "", "", ""))
-                Log.d("FILE: ", file.name)
+                if(file.name.contains(".mp3")){
+                    audioStories.add(AudioStory(id, file.name.replace("_", " ")
+                        .replace(".mp3", ""), "", "", ""))
+                }
             }
             adapter = AudioStoryAdapter(this, audioStories, object : ClickListener {
                     override fun onItemClick(view: View, index: Int) {
