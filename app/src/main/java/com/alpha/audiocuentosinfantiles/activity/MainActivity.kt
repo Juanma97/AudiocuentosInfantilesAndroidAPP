@@ -21,9 +21,8 @@ import com.alpha.audiocuentosinfantiles.recyclerview.RecyclerViewWrapper
 import com.alpha.audiocuentosinfantiles.utils.AdmobUtils
 import com.alpha.audiocuentosinfantiles.utils.ConnectivityReceiver
 import com.alpha.audiocuentosinfantiles.utils.Network
-import com.google.ads.consent.ConsentInfoUpdateListener
-import com.google.ads.consent.ConsentInformation
-import com.google.ads.consent.ConsentStatus
+import com.google.ads.consent.*
+import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
@@ -34,6 +33,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.onesignal.OneSignal
 import java.io.File
+import java.net.MalformedURLException
+import java.net.URL
 
 
 class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityReceiverListener {
@@ -42,15 +43,32 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
     var containerView: RecyclerView? = null
     var progressBar: ProgressBar? = null
     var noInternetConnection: TextView? = null
+    var form: ConsentForm? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         noInternetConnection = findViewById(R.id.textNoInternetConnection)
 
-        var consentInformation: ConsentInformation = ConsentInformation.getInstance(this)
-        var publisherIds: Array<String> = arrayOf("pub-0123456789012345")
-        consentInformation.requestConsentInfoUpdate(publisherIds, ConsentInfoUp1dateListener {
+        val consentInformation: ConsentInformation = ConsentInformation.getInstance(this)
+        val publisherIds: Array<String> = arrayOf("pub-3535087308150372")
+        consentInformation.requestConsentInfoUpdate(publisherIds, object: ConsentInfoUpdateListener {
+            override fun onFailedToUpdateConsentInfo(reason: String?) {
+                Log.d("ERROR", reason)
+            }
+
+            override fun onConsentInfoUpdated(consentStatus: ConsentStatus?) {
+                 if (ConsentInformation.getInstance(getBaseContext()).isRequestLocationInEeaOrUnknown()) {
+                    when (consentStatus) {
+                        ConsentStatus.UNKNOWN -> displayConsentForm()
+                        ConsentStatus.PERSONALIZED -> initializeAds(true)
+                        ConsentStatus.NON_PERSONALIZED -> initializeAds(false)
+                    }
+                } else {
+                    Log.d("ERROR", "Not in EU, displaying normal ads");
+                    initializeAds(true);
+                }
+            }
 
         })
 
@@ -64,6 +82,61 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
         setupContainerView()
         setupAndCheckNetwork()
         setupSearch()
+
+    }
+
+    private fun displayConsentForm() {
+        var privacyUrl: URL? = null;
+        try {
+            privacyUrl = URL("https://juanmaperezblog.wordpress.com/policy-privacy-audiocuentos/")
+        } catch (e: MalformedURLException) {
+            Log.e("ERROR", "Error processing privacy policy url", e)
+        }
+        form = ConsentForm.Builder(this, privacyUrl)
+                .withListener(object: ConsentFormListener() {
+                    override fun onConsentFormLoaded() {
+                        // Consent form loaded successfully.
+                        form?.show();
+                    }
+                    override fun onConsentFormOpened() {
+                        // Consent form was displayed.
+                    }
+                    override fun onConsentFormClosed(consentStatus: ConsentStatus, userPrefersAdFree: Boolean ) {
+                        // Consent form was closed.
+                        if (consentStatus.equals(ConsentStatus.PERSONALIZED))
+                            initializeAds(true);
+                        else
+                            initializeAds(false);
+                    }
+
+                    override fun onConsentFormError(errorDescription: String ) {
+                        // Consent form error. This usually happens if the user is not in the EU.
+                        Log.e("ERROR", "Error loading consent form: " + errorDescription)
+                    }
+                })
+                .withPersonalizedAdsOption()
+                .withNonPersonalizedAdsOption()
+                .build()
+
+        form?.load()
+    }
+
+        private fun initializeAds(isPersonalized: Boolean) {
+            // initialize AdMob and configre your ad
+
+            // this is the part you need to add/modify on your code
+            var adRequest: AdRequest? = null
+            if (isPersonalized) {
+                adRequest = AdRequest.Builder().build()
+            } else {
+                val extras = Bundle()
+                extras.putString("npa", "1")
+                adRequest = AdRequest.Builder()
+                        .addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
+                        .build();
+            }
+
+            // load the request into your adView
 
     }
 
