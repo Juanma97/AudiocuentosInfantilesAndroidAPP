@@ -137,7 +137,7 @@ class DetailsActivity : AppCompatActivity() {
         MobileAds.initialize(this, R.string.APP_ADMOB_ID.toString())
 
         mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd?.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd?.adUnitId = getString(R.string.INTERSTICIAL_ADMOB_ID)
         mInterstitialAd?.loadAd(AdRequest.Builder().build())
         mInterstitialAd?.adListener = object: AdListener(){
             override fun onAdLoaded() {
